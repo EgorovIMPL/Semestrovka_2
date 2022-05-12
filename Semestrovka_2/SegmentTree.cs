@@ -14,6 +14,7 @@ public class SegmentTree
     }
     public SegmentTree(int[] array)
     {
+        array = CheckLenght(array);
         this.array = new int[array.Length*2-1];
         array.CopyTo(this.array, array.Length-1);
         GrowTree();
@@ -40,9 +41,37 @@ public class SegmentTree
                 return number;
         return Int32.MaxValue;
     }
-
-    public void PrintTree()
+    
+    public string PrintTree()
     {
-        Console.WriteLine(String.Join(" ",array));
+        return String.Join(" ", array);
+    }
+
+    public void Add(int number)
+    {
+        var array1 = array[(array.Length/2)..array.Length].Where(x => x != 0).Append(number).ToArray();
+        array1 = CheckLenght(array1);
+        array = new int[array1.Length*2-1];
+        array1.CopyTo(array, array1.Length-1);
+        GrowTree();
+    }
+
+    public void Remove(int number)
+    {
+        var array1 = array[(array.Length/2)..array.Length].Where(x => (x != 0) && (x!=number)).ToArray();
+        array1 = CheckLenght(array1);
+        array = new int[array1.Length*2-1];
+        array1.CopyTo(array, array1.Length-1);
+        GrowTree();
+    }
+    private int[] CheckLenght(int[] array)
+    {
+        int count = 1;
+        int l = array.Length;
+        while (count < l)
+            count *= 2;
+        var newArray = new int[count];
+        array.CopyTo(newArray,0);
+        return newArray;
     }
 }
